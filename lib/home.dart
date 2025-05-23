@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'layout.dart';
 
 const Color jnjRed = Color(0xFFD71920);
 
@@ -14,26 +13,23 @@ class Home extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 800;
 
-    return Layout(
-      title: 'Home',
-      child: SingleChildScrollView(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.white, jnjRed.withOpacity(0.05)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+    return SingleChildScrollView(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, jnjRed.withOpacity(0.05)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          child: Column(
-            children: [
-              headerSection(context, screenWidth, isMobile),
-              const SizedBox(height: 30),
-              welcomeSection(screenWidth),
-              featureGrid(context, screenWidth, isMobile),
-              footerSection(screenWidth, context),
-            ],
-          ),
+        ),
+        child: Column(
+          children: [
+            headerSection(context, screenWidth, isMobile),
+            const SizedBox(height: 30),
+            welcomeSection(screenWidth),
+            featureGrid(context, screenWidth, isMobile),
+            footerSection(screenWidth, context),
+          ],
         ),
       ),
     );
@@ -70,7 +66,6 @@ class Home extends StatelessWidget {
         onPressed: () async => launchUrl(Uri.parse(url)),
       );
 
-
   Widget welcomeSection(double screenWidth) => Padding(
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08, vertical: 40),
         child: Column(
@@ -84,7 +79,7 @@ class Home extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               "Use the menu or cards below to explore modules.",
               style: GoogleFonts.poppins(fontSize: 16, color: Colors.black54),
@@ -95,19 +90,19 @@ class Home extends StatelessWidget {
       );
 
   Widget featureGrid(BuildContext context, double screenWidth, bool isMobile) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: GridView.count(
           crossAxisCount: isMobile ? 2 : 4,
           crossAxisSpacing: 15,
           mainAxisSpacing: 15,
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: _buildFeatureCards(context),
         ),
       );
 
   Widget footerSection(double screenWidth, BuildContext context) => Padding(
-        padding: EdgeInsets.symmetric(vertical: 30),
+        padding: const EdgeInsets.symmetric(vertical: 30),
         child: Column(
           children: [
             Text(
@@ -119,9 +114,9 @@ class Home extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Image.asset('images/logo_3.png', width: 60),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             TextButton(
               onPressed: () => context.go('/about'),
               child: Text('About', style: GoogleFonts.poppins(color: jnjRed)),
@@ -140,7 +135,7 @@ class Home extends StatelessWidget {
   Widget featureCard(BuildContext context, String title, IconData icon, String route) => InkWell(
         onTap: () => context.go(route),
         child: Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
@@ -153,8 +148,12 @@ class Home extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: 36, color: jnjRed),
-              SizedBox(height: 8),
-              Text(title, textAlign: TextAlign.center, style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
             ],
           ),
         ),
