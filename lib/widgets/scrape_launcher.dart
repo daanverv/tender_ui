@@ -48,23 +48,22 @@ class _ScrapeLauncherState extends State<ScrapeLauncher> {
   }
 
   void _startPolling(int websiteId) {
-  pollingTimer?.cancel();
-  pollingTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
-    try {
-      final updates = await ScrapeApiService.getTenderUpdates(websiteId);
-      setState(() {
-        tenderIds = updates;
-        debugMessage = null;
-        lastRawResponse = updates.toString();
-      });
-    } catch (e) {
-      setState(() {
-        debugMessage = 'Polling error: $e';
-      });
-    }
-  });
-}
-
+    pollingTimer?.cancel();
+    pollingTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+      try {
+        final updates = await ScrapeApiService.getTenderUpdates(websiteId);
+        setState(() {
+          tenderIds = updates;
+          debugMessage = null;
+          lastRawResponse = updates.toString();
+        });
+      } catch (e) {
+        setState(() {
+          debugMessage = 'Polling error: $e';
+        });
+      }
+    });
+  }
 
   void _onScrapePressed() async {
     if (selectedWebsiteId == null) {
@@ -102,9 +101,16 @@ class _ScrapeLauncherState extends State<ScrapeLauncher> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
+  String _formatDate(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/'
+           '${date.month.toString().padLeft(2, '0')}/'
+           '${date.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Scrape Launcher'),
         backgroundColor: jnjRed,
@@ -129,11 +135,26 @@ class _ScrapeLauncherState extends State<ScrapeLauncher> {
               ),
               value: selectedWebsiteId,
               items: websites.map((website) {
-                return DropdownMenuItem<int>(
-                  value: website.id,
-                  child: Text(website.name),
-                );
-              }).toList(),
+              final lastScraped = website.lastScrapedAt != null
+                  ? _formatDate(website.lastScrapedAt!)
+                  : 'Never';
+
+              return DropdownMenuItem<int>(
+                value: website.id,
+                child: Text.rich(
+                  TextSpan(
+                    text: website.name,
+                    style: TextStyle(color: Colors.black),
+                    children: [
+                      TextSpan(
+                        text: '  •  $lastScraped',
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
               onChanged: (value) {
                 setState(() {
                   selectedWebsiteId = value;

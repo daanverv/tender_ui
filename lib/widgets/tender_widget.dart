@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tender_ui/widgets/upload_excel.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/tender.dart';
 import 'package:photo_view/photo_view.dart';
@@ -87,40 +88,63 @@ void _showAttachmentsDialog(BuildContext context) {
 }
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 4,
-      child: ExpansionTile(
-        title: Text(
-          'Tender ID: ${tender.tenderId}',
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
+Widget build(BuildContext context) {
+  return Card(
+    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 4,
+    child: ExpansionTile(
+      title: Text(
+        'Tender ID: ${tender.tenderId}',
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+      ),
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 8, left: 16, right: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (tender.attachments.isNotEmpty)
+                ElevatedButton.icon(
+                  onPressed: () => _showAttachmentsDialog(context),
+                  icon: const Icon(Icons.attach_file),
+                  label: const Text('See Attachments'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade600,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    textStyle: GoogleFonts.poppins(fontSize: 14),
+                  ),
+                ),
+             if (tender.websiteId == 2) ...[
+              const SizedBox(height: 10),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueGrey,
+                  foregroundColor: Colors.white, 
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ExcelUploadPage()),
+                  );
+                },
+                icon: const Icon(Icons.table_chart),
+                label: const Text('Filter results by use of Excel'),
+              ),
+            ],
+
+            ],
           ),
         ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8, left: 16, right: 16),
-            child: tender.attachments.isNotEmpty
-                ? Align(
-                    alignment: Alignment.centerLeft,
-                    child: ElevatedButton.icon(
-                      onPressed: () => _showAttachmentsDialog(context),
-                      icon: const Icon(Icons.attach_file),
-                      label: const Text('See Attachments'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade600,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        textStyle: GoogleFonts.poppins(fontSize: 14),
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(

@@ -41,7 +41,25 @@ class ScrapePage extends StatelessWidget {
               ),
             ),
             onTap: () {
-              context.go('/tenders'); // Make sure this route exists in your router
+              context.go('/tenders');
+            },
+          ),
+        ),
+        Card(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 4,
+          child: ListTile(
+            title: Text(
+              'Scrape Based on Filters',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            onTap: () {
+              context.go('/scrape_with_filters'); 
             },
           ),
         ),

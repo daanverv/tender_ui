@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tender_ui/services/tender_service.dart';
 import 'package:tender_ui/services/website_service.dart';
+import 'package:tender_ui/widgets/upload_excel.dart';
 import '../widgets/tender_widget.dart';
 import '../models/tender.dart';
 import '../models/website.dart';
@@ -40,6 +41,12 @@ class _TenderScreenState extends State<TenderScreen> {
     }
   }
 
+  String _formatDate(DateTime date) {
+  return '${date.day.toString().padLeft(2, '0')}/'
+         '${date.month.toString().padLeft(2, '0')}/'
+         '${date.year}';
+}
+
   void _onSeeResultsPressed() async {
     if (selectedWebsiteId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -59,7 +66,7 @@ class _TenderScreenState extends State<TenderScreen> {
       setState(() {
         isLoading = false;
         tenderResults = tenders;
-        resultMessage = 'Retrieved ${tenders.length} tenders for website ID $selectedWebsiteId';
+        resultMessage = 'Retrieved ${tenders.length} tenders for this website';
       });
     } catch (e) {
       setState(() {
@@ -69,25 +76,37 @@ class _TenderScreenState extends State<TenderScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 800;
+  String? get selectedWebsiteName {
+  return websites.firstWhere(
+    (w) => w.id == selectedWebsiteId,
+    orElse: () => Website(id: 0, name: '', lastScrapedAt: null),
+  ).name;
+}
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Select a website to see scraped results',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: jnjRed,
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 20),
+@override
+Widget build(BuildContext context) {
+  final screenWidth = MediaQuery.of(context).size.width;
+  final isMobile = screenWidth < 800;
+
+  return Scaffold(
+    backgroundColor: Colors.transparent,
+    appBar: AppBar(
+      title: const Text('Scrape Results'),
+      backgroundColor: jnjRed,
+    ),
+    body: SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Select a website to see scraped results',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: jnjRed,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 24),
             DropdownButtonFormField<int>(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -95,11 +114,28 @@ class _TenderScreenState extends State<TenderScreen> {
               ),
               value: selectedWebsiteId,
               items: websites.map((website) {
-                return DropdownMenuItem<int>(
-                  value: website.id,
-                  child: Text(website.name),
-                );
-              }).toList(),
+              final lastScraped = website.lastScrapedAt != null
+                  ? _formatDate(website.lastScrapedAt!)
+                  : 'Never';
+
+              return DropdownMenuItem<int>(
+                value: website.id,
+                child: Text.rich(
+                  TextSpan(
+                    text: website.name,
+                    style: TextStyle(color: Colors.black),
+                    children: [
+                      TextSpan(
+                        text: '  •  $lastScraped',
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+
+              );
+            }).toList(),
+
               onChanged: (value) {
                 setState(() {
                   selectedWebsiteId = value;
@@ -118,7 +154,9 @@ class _TenderScreenState extends State<TenderScreen> {
               onPressed: isLoading ? null : _onSeeResultsPressed,
               icon: const Icon(Icons.search),
               label: const Text('See Results'),
+              
             ),
+            
             const SizedBox(height: 20),
             if (isLoading) const CircularProgressIndicator(),
             if (resultMessage != null) Text(resultMessage!),

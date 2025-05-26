@@ -8,7 +8,7 @@ class Tender {
   final String offerEndDate;
   final String procedureStatus;
   final Map<String, dynamic> content;
-  final List<dynamic> attachments;
+  final List<String> attachments;
   final List<String> links;
   final List<Lot> lots;
   final int websiteId;
@@ -30,25 +30,26 @@ class Tender {
   });
 
   factory Tender.fromJson(Map<String, dynamic> json) {
-    return Tender(
-      provider: json['provider'] ?? '',
-      tenderId: json['tender_id'] ?? '',
-      economicValue: json['economic_value'] ?? '',
-      offerStartDate: json['offer_start_date'] ?? '',
-      offerEndDate: json['offer_end_date'] ?? '',
-      procedureStatus: json['procedure_status'] ?? '',
-      content: Map<String, dynamic>.from(json['content'] ?? {}),
-      attachments: List<String>.from(json['attachments'] ?? []),
-      links: List<String>.from(
-        (json['links'] ?? []).map((e) =>
-          e is Map && e.containsKey('url') ? e['url'] : e.toString(),
-        ),
-      ),
-      lots: (json['lots'] ?? []).map<Lot>((lotJson) =>
-        Lot.fromJson(Map<String, dynamic>.from(lotJson))
-      ).toList(),
-      websiteId: json['website_id'] ?? 0,
-      uniqueTenderKey: json['unique_tender_key'] ?? '',
-    );
-  }
+  return Tender(
+    provider: json['provider']?.toString() ?? '',
+    tenderId: json['tender_id']?.toString() ?? '',
+    economicValue: json['economic_value']?.toString() ?? '',
+    offerStartDate: json['offer_start_date']?.toString() ?? '',
+    offerEndDate: json['offer_end_date']?.toString() ?? '',
+    procedureStatus: json['procedure_status']?.toString() ?? '',
+    content: Map<String, dynamic>.from(json['content'] ?? {}),
+    attachments: (json['attachments'] as List<dynamic>? ?? [])
+        .map((e) => e.toString())
+        .toList(),
+    links: (json['links'] as List<dynamic>? ?? [])
+        .map((e) => e is Map && e.containsKey('url') ? e['url'].toString() : e.toString())
+        .toList(),
+    lots: (json['lots'] as List<dynamic>? ?? [])
+        .whereType<Map<String, dynamic>>()
+        .map((lotJson) => Lot.fromJson(lotJson))
+        .toList(),
+    websiteId: json['website_id'] ?? 0,
+    uniqueTenderKey: json['unique_tender_key']?.toString() ?? '',
+  );
+}
 }

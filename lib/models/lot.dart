@@ -23,18 +23,30 @@ class Lot {
     required this.attachments,
   });
 
-  factory Lot.fromJson(Map<String, dynamic> json) {
-    return Lot(
-      lotId: json['lot_id'] ?? json['cig_code'] ?? '',
-      lotName: json['lot_name'] ?? json['name'] ?? '',
-      sintelId: json['sintel_id'] ?? '',
-      procedureType: json['procedure_type'] ?? '',
-      status: json['procedure_status'] ?? json['status'] ?? '',
-      categories: json['merchandise_categories'] ?? json['categories'] ?? '',
-      economicValue: json['economic_value'] ?? json['value'] ?? '',
-      startDate: json['offer_start_date'] ?? json['start_date'] ?? '',
-      endDate: json['offer_end_date'] ?? json['end_date'] ?? '',
-      attachments: json['attachments'] ?? '',
-    );
+factory Lot.fromJson(Map<String, dynamic> json) {
+  String getValue(List<String> keys) {
+    for (var key in keys) {
+      if (json.containsKey(key) && json[key] != null) {
+        return json[key].toString();
+      }
+    }
+    return '';
   }
+
+  return Lot(
+    lotId: getValue(['lot_id', 'cig_code']),
+    lotName: getValue(['lot_name', 'nome_lotto', 'name']),
+    sintelId: getValue(['sintel_id']),
+    procedureType: getValue(['procedure_type', 'tipo']),
+    status: getValue(['procedure_status', 'stato', 'status']),
+    categories: getValue(['merchandise_categories', 'categorie_merceologiche', 'categories']),
+    economicValue: getValue(['economic_value', 'valore_economico', 'value']),
+    startDate: getValue(['offer_start_date', 'data_inizio', 'start_date']),
+    endDate: getValue(['offer_end_date', 'data_fine', 'end_date']),
+    attachments: json['attachments'] is List
+        ? (json['attachments'] as List).map((e) => e.toString()).join(', ')
+        : json['attachments']?.toString() ?? '',
+  );
+}
+
 }

@@ -4,6 +4,7 @@ import 'package:tender_ui/home.dart';
 import 'package:tender_ui/layout.dart';
 import 'package:tender_ui/widgets/scrape_launcher.dart';
 import 'package:tender_ui/widgets/scrape_site.dart';
+import 'package:tender_ui/widgets/scrape_with_filters.dart';
 import 'package:tender_ui/widgets/tender_screen.dart';
 
 
@@ -57,6 +58,11 @@ class JnJApp extends StatelessWidget {
               path: '/scrape_website',
               builder: (context, state) =>
                   const ScrapeLauncher(),
+            ),
+            GoRoute(
+              path: '/scrape_with_filters',
+              builder: (context, state) =>
+                  const ScrapeWithFilterPage(),
             )
           ],
         ),
