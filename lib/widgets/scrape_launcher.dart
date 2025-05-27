@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tender_ui/env.dart';
 import 'package:tender_ui/models/website.dart';
 import 'package:tender_ui/services/scrape_api_service.dart';
@@ -93,12 +94,17 @@ class _ScrapeLauncherState extends State<ScrapeLauncher> {
     }
   }
 
-  void _showError(String message) {
+  void _showError(String message, {bool showInUI = false}) {
     setState(() {
       isLoading = false;
-      debugMessage = message;
+      debugMessage = showInUI ? message : 'Scraped site -- look for logs for details';
     });
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+
+    if (showInUI) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    }
+
+    debugPrint("Error: $message");
   }
 
   String _formatDate(DateTime date) {
@@ -112,9 +118,19 @@ class _ScrapeLauncherState extends State<ScrapeLauncher> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text('Scrape Launcher'),
-        backgroundColor: jnjRed,
-      ),
+      title: const Text('Scrape Launcher'),
+      backgroundColor: jnjRed,
+      leading: IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go('/'); 
+        }
+      },
+    ),
+    ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -136,8 +152,8 @@ class _ScrapeLauncherState extends State<ScrapeLauncher> {
               value: selectedWebsiteId,
               items: websites.map((website) {
               final lastScraped = website.lastScrapedAt != null
-                  ? _formatDate(website.lastScrapedAt!)
-                  : 'Never';
+                  ? 'Last scraped at: ${_formatDate(website.lastScrapedAt!)}'
+                  : 'Never scraped';
 
               return DropdownMenuItem<int>(
                 value: website.id,

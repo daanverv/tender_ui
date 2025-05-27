@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tender_ui/home.dart';
 import 'package:tender_ui/layout.dart';
+import 'package:tender_ui/widgets/errors.dart';
+import 'package:tender_ui/widgets/parameters.dart';
 import 'package:tender_ui/widgets/scrape_launcher.dart';
 import 'package:tender_ui/widgets/scrape_site.dart';
 import 'package:tender_ui/widgets/scrape_with_filters.dart';
@@ -37,12 +39,12 @@ class JnJApp extends StatelessWidget {
             GoRoute(
               path: '/parameters',
               builder: (context, state) =>
-                  const PlaceholderScreen(title: 'Parameters'),
+                  const Parameters(),
             ),
             GoRoute(
               path: '/errors',
               builder: (context, state) =>
-                  const PlaceholderScreen(title: 'Errors'),
+                  Errors(),
             ),
             GoRoute(
               path: '/about',
@@ -63,7 +65,7 @@ class JnJApp extends StatelessWidget {
               path: '/scrape_with_filters',
               builder: (context, state) =>
                   const ScrapeWithFilterPage(),
-            )
+            ),
           ],
         ),
       ],

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:io';
 
 import 'package:tender_ui/services/excel_upload_service.dart';
@@ -287,8 +288,20 @@ await showDialog(
   @override
 Widget build(BuildContext context) {
   return Scaffold(
+    backgroundColor: Colors.transparent,
     appBar: AppBar(
-      title: Text('Upload Excel'),
+      title: const Text('Scrape Results'),
+      backgroundColor: jnjRed,
+      leading: IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go('/'); 
+        }
+      },
+    ),
     ),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),

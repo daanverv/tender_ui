@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tender_ui/services/tender_service.dart';
 import 'package:tender_ui/services/website_service.dart';
 import 'package:tender_ui/widgets/upload_excel.dart';
@@ -93,6 +94,16 @@ Widget build(BuildContext context) {
     appBar: AppBar(
       title: const Text('Scrape Results'),
       backgroundColor: jnjRed,
+      leading: IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go('/'); 
+        }
+      },
+    ),
     ),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
@@ -143,6 +154,79 @@ Widget build(BuildContext context) {
               },
             ),
             const SizedBox(height: 24),
+           if (tenderResults.isNotEmpty)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: jnjRed,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: isLoading ? null : _onSeeResultsPressed,
+                  icon: const Icon(Icons.search),
+                  label: const Text(
+                    'See Results',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[800],
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Download Tenders'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: const Icon(Icons.code),
+                              title: const Text('Download as JSON'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                //_downloadAsJson();
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.picture_as_pdf),
+                              title: const Text('Download as PDF'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                //_downloadAsPdf();
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.description),
+                              title: const Text('Download as Word'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                //_downloadAsWord();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.download),
+                  label: const Text(
+                    'Download Tenders',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            )
+          else
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                 backgroundColor: jnjRed,
@@ -153,10 +237,12 @@ Widget build(BuildContext context) {
               ),
               onPressed: isLoading ? null : _onSeeResultsPressed,
               icon: const Icon(Icons.search),
-              label: const Text('See Results'),
-              
+              label: const Text(
+                'See Results',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-            
+ 
             const SizedBox(height: 20),
             if (isLoading) const CircularProgressIndicator(),
             if (resultMessage != null) Text(resultMessage!),

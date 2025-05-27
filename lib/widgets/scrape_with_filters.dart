@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tender_ui/services/website_service.dart';
 import 'package:tender_ui/models/website.dart';
 import 'package:tender_ui/widgets/lazio_filter_page.dart';
@@ -57,6 +58,16 @@ Widget build(BuildContext context) {
     appBar: AppBar(
       title: const Text('Apply Filters'),
       backgroundColor: jnjRed,
+      leading: IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go('/'); 
+        }
+      },
+    ),
     ),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
