@@ -17,7 +17,7 @@ class Home extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, jnjRed.withOpacity(0.05)],
+            colors: [Colors.white, jnjRed.withOpacity(0.01)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),

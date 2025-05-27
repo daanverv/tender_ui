@@ -26,7 +26,7 @@ class Layout extends StatelessWidget {
       constraints: const BoxConstraints.expand(),
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('images/JnJ.png'),
+          image: AssetImage('images/background_1.png'),
           fit: BoxFit.cover,
         ),
       ),

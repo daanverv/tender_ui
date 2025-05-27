@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tender_ui/models/error.dart';
 import 'package:tender_ui/services/errors_service.dart';
+
+const Color jnjRed = Color(0xFFD71920);
 
 class Errors extends StatefulWidget {
   @override
@@ -53,11 +56,22 @@ class _ErrorsState extends State<Errors> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('Session Logs'),
+        backgroundColor: jnjRed,
+        leading: IconButton(icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/'); 
+            }
+          },
+        ),
         actions: [
-          IconButton(icon: Icon(Icons.refresh), onPressed: _refreshLogs),
-          IconButton(icon: Icon(Icons.delete), onPressed: _clearLogs),
+          IconButton(icon: Icon(Icons.refresh, color: Colors.white), onPressed: _refreshLogs),
+          IconButton(icon: Icon(Icons.delete, color: Colors.white), onPressed: _clearLogs),
         ],
       ),
       body: Column(

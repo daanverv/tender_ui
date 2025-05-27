@@ -116,7 +116,7 @@ class ScrapePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showSearchDialog(context),
         backgroundColor: jnjRed,
-        child: const Icon(Icons.search),
+        child: const Icon(Icons.search, color: Colors.white),
         tooltip: 'Search Database',
       ),
     );

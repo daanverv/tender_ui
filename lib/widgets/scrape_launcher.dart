@@ -97,7 +97,7 @@ class _ScrapeLauncherState extends State<ScrapeLauncher> {
   void _showError(String message, {bool showInUI = false}) {
     setState(() {
       isLoading = false;
-      debugMessage = showInUI ? message : 'Scraped site -- look for logs for details';
+      debugMessage = showInUI ? message : 'Scraped site -- look for logs for details -- Probably it stumbled on a tender that was already scraped and it stopped executing';
     });
 
     if (showInUI) {
@@ -178,26 +178,49 @@ class _ScrapeLauncherState extends State<ScrapeLauncher> {
               },
             ),
             const SizedBox(height: 24),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: jnjRed,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            Row(
+              children: [
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: jnjRed,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: isLoading ? null : _onScrapePressed,
+                  icon: const Icon(Icons.search),
+                  label: isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text('Scrape',
+                          style: TextStyle(color: Colors.white)),
                 ),
-              ),
-              onPressed: isLoading ? null : _onScrapePressed,
-              icon: const Icon(Icons.search),
-              label: isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : const Text('Scrape'),
+                const SizedBox(width: 16),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[700],
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    context.go('/add_website'); 
+                  },
+                  icon: const Icon(Icons.add,
+                    color: Colors.white,
+                  ),
+                  label: const Text('Add Website',
+                  style: TextStyle(color: Colors.white),),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
             if (tenderIds.isNotEmpty)

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tender_ui/home.dart';
 import 'package:tender_ui/layout.dart';
+import 'package:tender_ui/widgets/add_website.dart';
 import 'package:tender_ui/widgets/errors.dart';
 import 'package:tender_ui/widgets/parameters.dart';
 import 'package:tender_ui/widgets/scrape_launcher.dart';
@@ -65,6 +66,11 @@ class JnJApp extends StatelessWidget {
               path: '/scrape_with_filters',
               builder: (context, state) =>
                   const ScrapeWithFilterPage(),
+            ),
+            GoRoute(
+              path: '/add_website',
+              builder: (context, state) =>
+                  const AddWebsitePage(),
             ),
           ],
         ),
