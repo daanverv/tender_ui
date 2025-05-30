@@ -156,7 +156,7 @@ void _showLoadingDialog(BuildContext context) {
             const SizedBox(width: 20),
             Flexible(
               child: Text(
-                'Applying filters and looking for results...',
+                'Applying filters and scraping the result...',
                 style: TextStyle(fontSize: 16),
               ),
             ),

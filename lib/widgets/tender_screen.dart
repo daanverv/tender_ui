@@ -48,6 +48,19 @@ class _TenderScreenState extends State<TenderScreen> {
          '${date.year}';
 }
 
+  void _overviewResult() {
+    if (selectedWebsiteId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a website.')),
+      );
+      return;
+    }
+
+    context.push('/tender_overview?websiteId=$selectedWebsiteId');
+
+    return;
+  }
+
   void _onSeeResultsPressed() async {
     if (selectedWebsiteId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -170,6 +183,36 @@ Widget build(BuildContext context) {
                   icon: const Icon(Icons.search),
                   label: const Text(
                     'See Results',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: jnjRed,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: isLoading ? null : _onSeeResultsPressed,
+                  icon: const Icon(Icons.search),
+                  label: const Text(
+                    'Sort by ',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: jnjRed,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: isLoading ? null : _overviewResult,
+                  icon: const Icon(Icons.search),
+                  label: const Text(
+                    'Overview',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),

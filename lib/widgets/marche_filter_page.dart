@@ -46,7 +46,7 @@ class _MarcheFilterPageState extends State<MarcheFilterPage> {
               children: [
                 CircularProgressIndicator(),
                 SizedBox(width: 16),
-                Text("Applying Filters..."),
+                Text("Applying filters and scraping the results"),
               ],
             ),
           ),

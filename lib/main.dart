@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tender_ui/home.dart';
 import 'package:tender_ui/layout.dart';
 import 'package:tender_ui/widgets/add_website.dart';
+import 'package:tender_ui/widgets/clear_overview.dart';
 import 'package:tender_ui/widgets/errors.dart';
 import 'package:tender_ui/widgets/parameters.dart';
 import 'package:tender_ui/widgets/scrape_launcher.dart';
@@ -22,6 +23,21 @@ class JnJApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final GoRouter _router = GoRouter(
       routes: [
+                   GoRoute(
+            path: '/tender_overview',
+            builder: (context, state) {
+              final websiteIdStr = state.uri.queryParameters['websiteId'];
+              final websiteId = websiteIdStr != null ? int.tryParse(websiteIdStr) : null;
+
+              if (websiteId == null) {
+                return const Scaffold(
+                  body: Center(child: Text('Invalid or missing websiteId')),
+                );
+              }
+
+              return TenderOverviewPage(websiteId: websiteId);
+            },
+          ),
         ShellRoute(
           builder: (context, state, child) {
             final location = state.fullPath ?? '/';

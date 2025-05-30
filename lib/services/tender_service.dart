@@ -19,4 +19,19 @@ class GetTenders {
       throw Exception('Failed to load tenders');
     }
   }
+
+
+
+  Future<String> fetchTendersOverview(int websiteId) async {
+    final response = await http.get(Uri.parse('$_baseUrl/clear_view/$websiteId'));
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['overview'];
+    } else {
+      throw Exception('Failed to load overview');
+    }
+  }
+
 }

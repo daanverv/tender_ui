@@ -14,9 +14,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool sendInfo = false;
   bool sendWarning = false;
   bool sendError = true;
+  bool notifyOnNewTender = true; 
 
   void _onConfirm() {
     final email = emailController.text;
+
+    debugPrint('Email: $email');
+    debugPrint('Send Info: $sendInfo');
+    debugPrint('Send Warning: $sendWarning');
+    debugPrint('Send Error: $sendError');
+    debugPrint('Notify on New Tender: $notifyOnNewTender');
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Settings saved')),
     );
@@ -55,6 +63,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               value: sendError,
               onChanged: (val) => setState(() => sendError = val),
             ),
+            SwitchListTile(
+              title: const Text('Notify on New Tender'),
+              value: notifyOnNewTender,
+              onChanged: (val) => setState(() => notifyOnNewTender = val),
+            ),
             const Spacer(),
             SizedBox(
               width: double.infinity,
@@ -64,8 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   backgroundColor: jnjRed,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text('Confirm',
-                style: TextStyle(color: Colors.white),),
+                child: const Text('Confirm', style: TextStyle(color: Colors.white)),
               ),
             ),
           ],

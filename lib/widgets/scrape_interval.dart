@@ -14,6 +14,9 @@ class _ScrapeIntervalScreenState extends State<ScrapeIntervalScreen> {
   List<String> websites = [];
   final Map<String, int> intervals = {};
   final Map<String, String> units = {};
+  final Map<String, TimeOfDay> selectedTimes = {};
+  final Map<String, Set<String>> selectedDays = {};
+  final Map<String, String> selectedWeeks = {};
 
   final List<String> timeUnits = ['Hours', 'Days', 'Weeks'];
 
@@ -34,13 +37,110 @@ class _ScrapeIntervalScreenState extends State<ScrapeIntervalScreen> {
     for (var site in websites) {
       final interval = intervals[site];
       final unit = units[site];
-      debugPrint('Site: $site, Interval: $interval, Unit: $unit');
+      final time = selectedTimes[site];
+      final days = selectedDays[site];
+      final week = selectedWeeks[site];
+
+      debugPrint('Site: $site, Unit: $unit');
+      if (unit == 'Hours') {
+        debugPrint('  Interval: $interval');
+        debugPrint('  Time: ${time?.format(context)}');
+      } else if (unit == 'Days') {
+        debugPrint('  Days: ${days?.join(', ')}');
+      } else if (unit == 'Weeks') {
+        debugPrint('  Week: $week');
+      }
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Scrape intervals saved successfully!')),
     );
   }
+
+ Widget _buildAllIntervalOptions(String site) {
+  selectedDays.putIfAbsent(site, () => <String>{});
+
+  final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  final weeks = ['1st', '2nd', '3rd', '4th', 'Last'];
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Hours
+      Text('Hourly Interval', style: TextStyle(fontWeight: FontWeight.bold)),
+      SizedBox(
+        height: 5,
+      ),
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: jnjRed,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        ),
+        onPressed: () async {
+          final time = await showTimePicker(
+            context: context,
+            initialTime: selectedTimes[site] ?? TimeOfDay.now(),
+          );
+          if (time != null) {
+            setState(() {
+              selectedTimes[site] = time;
+            });
+          }
+        },
+        child: Text(selectedTimes[site] != null
+            ? 'Time: ${selectedTimes[site]!.format(context)}'
+            : 'Pick Time', style: TextStyle(color: Colors.white)),
+      ),
+      TextField(
+        keyboardType: TextInputType.number,
+        decoration: const InputDecoration(labelText: 'Interval (in hours)'),
+        onChanged: (value) {
+          intervals[site] = int.tryParse(value) ?? 0;
+        },
+      ),
+      const SizedBox(height: 16),
+
+      // Days
+      Text('Days of the Week', style: TextStyle(fontWeight: FontWeight.bold)),
+      Wrap(
+        spacing: 8,
+        children: days.map((day) {
+          final isSelected = selectedDays[site]!.contains(day);
+          return FilterChip(
+            label: Text(day),
+            selected: isSelected,
+            onSelected: (selected) {
+              setState(() {
+                if (selected) {
+                  selectedDays[site]!.add(day);
+                } else {
+                  selectedDays[site]!.remove(day);
+                }
+              });
+            },
+          );
+        }).toList(),
+      ),
+      const SizedBox(height: 16),
+
+      // Weeks
+      Text('Week of the Month', style: TextStyle(fontWeight: FontWeight.bold)),
+      DropdownButton<String>(
+        hint: const Text('Select Week'),
+        value: selectedWeeks[site],
+        items: weeks.map((week) {
+          return DropdownMenuItem(value: week, child: Text(week));
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            selectedWeeks[site] = value!;
+          });
+        },
+      ),
+    ],
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -66,34 +166,10 @@ class _ScrapeIntervalScreenState extends State<ScrapeIntervalScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(site, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          Text(site, style: const TextStyle(fontWeight: FontWeight.bold,
+                          fontSize: 20)),
                           const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(labelText: 'Interval'),
-                                  onChanged: (value) {
-                                    intervals[site] = int.tryParse(value) ?? 0;
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              DropdownButton<String>(
-                                value: units[site],
-                                hint: const Text('Unit'),
-                                items: timeUnits.map((unit) {
-                                  return DropdownMenuItem(value: unit, child: Text(unit));
-                                }).toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    units[site] = value!;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
+                          _buildAllIntervalOptions(site),
                         ],
                       ),
                     ),
@@ -110,9 +186,7 @@ class _ScrapeIntervalScreenState extends State<ScrapeIntervalScreen> {
                   backgroundColor: jnjRed,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text('Confirm',
-                style: TextStyle(color: Colors.white),)
-                ,
+                child: const Text('Confirm', style: TextStyle(color: Colors.white)),
               ),
             ),
           ],

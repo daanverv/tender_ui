@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
 
@@ -228,10 +229,12 @@ await showDialog(
                               }
 
                               await showDialog(
-                                context: parentContext,
-                                builder: (context) => AlertDialog(
-                                  title: Text('Filter Result'),
-                                  content: SingleChildScrollView(
+                              context: parentContext,
+                              builder: (context) => AlertDialog(
+                                title: Text('Filter Result'),
+                                content: SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.9, // 90% of screen width
+                                  child: SingleChildScrollView(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -241,18 +244,27 @@ await showDialog(
                                         SizedBox(height: 16),
                                         Text('Answer:', style: TextStyle(fontWeight: FontWeight.bold)),
                                         SizedBox(height: 4),
-                                        Text(answer),
+                                        MarkdownBody(
+                                          data: answer,
+                                          styleSheet: MarkdownStyleSheet(
+                                            p: const TextStyle(fontSize: 14),
+                                            tableBody: const TextStyle(fontFamily: 'Courier'),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: Text('Close'),
-                                    ),
-                                  ],
                                 ),
-                              );
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text('Close'),
+                                  ),
+                                ],
+                              ),
+                            );
+
+
                             } catch (e) {
                               if (spinnerContext != null && Navigator.canPop(spinnerContext!)) {
                                 Navigator.pop(spinnerContext!); // ✅ Ensure spinner is closed on error

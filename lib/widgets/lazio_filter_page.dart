@@ -31,7 +31,7 @@ class _LazioFilterPageState extends State<LazioFilterPage> {
               children: [
                 CircularProgressIndicator(),
                 SizedBox(width: 16),
-                Text("Applying Filters..."),
+                Text("Applying filters and scraping the results"),
               ],
             ),
           ),
